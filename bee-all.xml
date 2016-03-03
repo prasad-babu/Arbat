@@ -119,14 +119,6 @@
            </function>
   </expression>
 
-  <expression  variable="java sources" >
-           <function name="newerthan">
-              <parameter variable="src/common/.java" type="dir"/>
-              <parameter value="lib/.class" type="dir"/>
-           </function>
-  </expression>
-
-
   <variable name="event, naming IDLs" type="array">CosEventChannelAdmin.idl CosEventComm.idl CosNaming.idl</variable>
 <!-- java com.sun.tools.corba.se.idl.toJavaPortable.Compile [options] <idl file> -->
   <target name="idl" dir="IDL src">
@@ -238,16 +230,26 @@
         <expression>
           <operator name="eq">
             <function name ="timestamp">
-               <parameter value="lib"/>
+               <parameter value="lib" type="path"/>
             </function>
-            <value></value>
+            <value/>
           </operator>
         </expression>
      </dependency>
-     <task exec="mkdir">
-       <parameter value="lib"/>
-     </task>
+     <block>
+        <echo>Creating lib</echo>
+        <function name="mkd">
+          <parameter value="lib" type="path"/>
+        </function>
+     </block>
   </target>
+
+  <expression  variable="java sources" >
+           <function name="newerthan">
+              <parameter value="src/java/common/.java"  type="dir"/>
+              <parameter value="lib/.class"  type="dir"/>
+           </function>
+  </expression>
 
   <target name="java" dir="ARBAT_HOME" >
     <dependency target="assure lib"/>
