@@ -198,8 +198,6 @@
                </operator>
             </expression>
             <operator name="array">
-               <value>-target</value>
-               <value variable="java version"/>
                <value>-bootclasspath</value>
                <value variable="target runtime"/>
             </operator>
@@ -211,8 +209,7 @@
                    <value>/lib</value>
                </operator>
             </expression>
-            <expression>
-            </expression>
+	   <expression/>
         </block>
      </if>
   </expression>
@@ -266,6 +263,8 @@
     <echo variable="java sources"/>
     <task name="java compilation" exec="java compiler">
        <parameter value="-source"/>
+       <parameter variable="java version"/>
+       <parameter value="-target"/>
        <parameter variable="java version"/>
        <parameter variable="target version options"/>
        <parameter value="-classpath"/>
