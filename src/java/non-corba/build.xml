@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Arbat-NonCORBA" default="jar" basedir=".">
+    <description>
+        Build file for the non-CORBA implementation of Arbat
+    </description>
+
+    <!-- Global properties -->
+    <property name="src" location="."/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+    <property name="doc" location="doc"/>
+    <property name="test" location="com/metricstream/omg/test"/>
+    <property name="examples" location="com/metricstream/omg/examples"/>
+    <property name="jar.name" value="arbat-nonjava.jar"/>
+    <property name="main.class" value="com.metricstream.omg.examples.NamingServiceExample"/>
+
+    <!-- Classpath for compilation and execution -->
+    <path id="classpath">
+        <fileset dir="${lib}" erroronmissingdir="false">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location="${build}"/>
+    </path>
+
+    <!-- Initialize build directories -->
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${doc}"/>
+    </target>
+
+    <!-- Compile the Java code -->
+    <target name="compile" depends="init" description="Compile the source">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false" debug="true" source="1.8" target="1.8">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <!-- Generate Javadoc -->
+    <target name="javadoc" depends="compile" description="Generate Javadoc">
+        <javadoc sourcepath="${src}" destdir="${doc}" packagenames="com.metricstream.omg.*">
+            <classpath refid="classpath"/>
+        </javadoc>
+    </target>
+
+    <!-- Create JAR file -->
+    <target name="jar" depends="compile" description="Generate the JAR file">
+        <mkdir dir="${dist}"/>
+        <jar jarfile="${dist}/${jar.name}" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Clean build directories -->
+    <target name="clean" description="Clean up build directories">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${doc}"/>
+    </target>
+
+    <!-- Run the MigrationTest -->
+    <target name="run-test" depends="compile" description="Run the MigrationTest">
+        <java classname="com.metricstream.omg.test.MigrationTest" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run the EventChannelFactoryTest -->
+    <target name="run-factory-test" depends="compile" description="Run the EventChannelFactoryTest">
+        <java classname="com.metricstream.omg.test.EventChannelFactoryTest" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run the MigrationHelperTest -->
+    <target name="run-migration-helper-test" depends="compile" description="Run the MigrationHelperTest">
+        <java classname="com.metricstream.omg.test.MigrationHelperTest" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run all tests -->
+    <target name="run-tests" depends="run-test, run-factory-test, run-migration-helper-test" 
+            description="Run all test classes"/>
+
+    <!-- Run the NamingServiceExample -->
+    <target name="run-naming-example" depends="compile" description="Run the NamingServiceExample">
+        <java classname="com.metricstream.omg.examples.NamingServiceExample" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run the EventChannelExample -->
+    <target name="run-event-example" depends="compile" description="Run the EventChannelExample">
+        <java classname="com.metricstream.omg.examples.EventChannelExample" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run the PullEventExample -->
+    <target name="run-pull-example" depends="compile" description="Run the PullEventExample">
+        <java classname="com.metricstream.omg.examples.PullEventExample" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Run all examples -->
+    <target name="run-examples" depends="run-naming-example, run-event-example, run-pull-example" 
+            description="Run all example applications"/>
+
+    <!-- Run the MigrationHelper utility -->
+    <target name="run-migration-helper" depends="compile" description="Run the MigrationHelper utility">
+        <java classname="com.metricstream.omg.util.MigrationHelper" fork="true">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Package distribution -->
+    <target name="package" depends="jar, javadoc" description="Package all artifacts">
+        <zip destfile="${dist}/arbat-nonjava-dist.zip">
+            <zipfileset dir="${dist}" includes="${jar.name}"/>
+            <zipfileset dir="${doc}" prefix="doc"/>
+            <zipfileset dir="${src}" includes="com/metricstream/omg/**/*.java" prefix="src"/>
+            <zipfileset dir="." includes="build.xml"/>
+            <zipfileset dir="." includes="README.md"/>
+            <zipfileset dir="." includes="MIGRATION_GUIDE.md"/>
+        </zip>
+    </target>
+</project>
